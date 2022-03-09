@@ -1,0 +1,10 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [CustomerEmail]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    CustomerId INT FOREIGN KEY REFERENCES [Customer](Id),
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Active BINARY DEFAULT 1 NOT NULL
+)

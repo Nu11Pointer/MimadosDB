@@ -1,0 +1,10 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [Municipality]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    DepartmentId INT FOREIGN KEY REFERENCES [Department](Id),
+    Name VARCHAR(100) NOT NULL,
+    Active BINARY DEFAULT 1 NOT NULL
+)

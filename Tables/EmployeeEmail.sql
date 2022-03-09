@@ -1,0 +1,10 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [EmployeeEmail]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    EmployeeId INT FOREIGN KEY REFERENCES [Employee](Id),
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Active BINARY DEFAULT 1 NOT NULL
+)

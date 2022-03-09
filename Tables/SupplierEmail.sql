@@ -1,0 +1,10 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [SupplierEmail]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    SupplierId INT FOREIGN KEY REFERENCES [Supplier](Id),
+    Email VARCHAR(9) UNIQUE NOT NULL,
+    Active BINARY DEFAULT 1 NOT NULL
+)

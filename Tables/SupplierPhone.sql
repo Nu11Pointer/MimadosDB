@@ -1,0 +1,10 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [SupplierPhone]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    SupplierId INT FOREIGN KEY REFERENCES [Supplier](Id),
+    PhoneNumber VARCHAR(9) UNIQUE NOT NULL,
+    Active BINARY DEFAULT 1 NOT NULL
+)
