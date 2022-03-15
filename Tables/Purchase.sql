@@ -8,6 +8,6 @@ CREATE TABLE [Purchase]
   Quantity INT CHECK (Quantity > 0) NOT NULL,
   PurchasePrice DECIMAL(10, 2) CHECK (PurchasePrice >= 0) NOT NULL,
   TimeStamp DATETIME DEFAULT GETDATE() NOT NULL,
-  Active BINARY DEFAULT 1 NOT NULL,
+  Active BIT DEFAULT 1 NOT NULL,
   PRIMARY KEY (ProductId, SupplierId, TimeStamp)
 )

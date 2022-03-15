@@ -7,5 +7,5 @@ CREATE TABLE [BranchOffice]
     Name VARCHAR(100) NOT NULL,
     Address VARCHAR(250) NOT NULL,
     MunicipalityId INT FOREIGN KEY REFERENCES [Municipality](Id),
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )

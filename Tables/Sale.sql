@@ -10,5 +10,5 @@ CREATE TABLE [Sale]
     EmployeeId INT FOREIGN KEY REFERENCES [Employee](Id),
     Payment DECIMAL(10, 2) CHECK (Payment >= 0) NOT NULL,
     TimeStamp DATETIME DEFAULT GETDATE() NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )

@@ -13,11 +13,13 @@ CREATE DATABASE MimadosDB
 
 USE MimadosDB
 
+-- Tables
+
 CREATE TABLE [Department]
 (
     Id INT IDENTITY PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [Municipality]
@@ -25,7 +27,7 @@ CREATE TABLE [Municipality]
     Id INT IDENTITY PRIMARY KEY,
     DepartmentId INT FOREIGN KEY REFERENCES [Department](Id),
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [BranchOffice]
@@ -34,7 +36,7 @@ CREATE TABLE [BranchOffice]
     Name VARCHAR(100) NOT NULL,
     Address VARCHAR(250) NOT NULL,
     MunicipalityId INT FOREIGN KEY REFERENCES [Municipality](Id),
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [BranchOfficePhone]
@@ -42,7 +44,7 @@ CREATE TABLE [BranchOfficePhone]
     Id INT IDENTITY PRIMARY KEY,
     BranchOfficeId INT FOREIGN KEY REFERENCES [BranchOffice](Id),
     PhoneNumber VARCHAR(9) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [Customer]
@@ -53,7 +55,7 @@ CREATE TABLE [Customer]
     SurName VARCHAR(100) NOT NULL,
     Address VARCHAR(250) NOT NULL,
     MunicipalityId INT FOREIGN KEY REFERENCES [Municipality](Id),
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [CustomerEmail]
@@ -61,7 +63,7 @@ CREATE TABLE [CustomerEmail]
     Id INT IDENTITY PRIMARY KEY,
     CustomerId INT FOREIGN KEY REFERENCES [Customer](Id),
     Email VARCHAR(100) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [CustomerPhone]
@@ -69,14 +71,14 @@ CREATE TABLE [CustomerPhone]
     Id INT IDENTITY PRIMARY KEY,
     CustomerId INT FOREIGN KEY REFERENCES [Customer](Id),
     PhoneNumber VARCHAR(9) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [EmployeePosition]
 (
     Id INT IDENTITY PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [Employee]
@@ -89,7 +91,7 @@ CREATE TABLE [Employee]
     SurName VARCHAR(100) NOT NULL,
     Address VARCHAR(250),
     MunicipalityId INT FOREIGN KEY REFERENCES [Municipality](Id),
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [EmployeeEmail]
@@ -97,7 +99,7 @@ CREATE TABLE [EmployeeEmail]
     Id INT IDENTITY PRIMARY KEY,
     EmployeeId INT FOREIGN KEY REFERENCES [Employee](Id),
     Email VARCHAR(100) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [EmployeePhone]
@@ -105,7 +107,7 @@ CREATE TABLE [EmployeePhone]
     Id INT IDENTITY PRIMARY KEY,
     EmployeeId INT FOREIGN KEY REFERENCES [Employee](Id),
     PhoneNumber VARCHAR(9) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [Supplier]
@@ -114,7 +116,7 @@ CREATE TABLE [Supplier]
     Name VARCHAR(100) NOT NULL,
     Address VARCHAR(250) NOT NULL,
     MunicipalityId INT FOREIGN KEY REFERENCES [Municipality](Id),
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [SupplierEmail]
@@ -122,7 +124,7 @@ CREATE TABLE [SupplierEmail]
     Id INT IDENTITY PRIMARY KEY,
     SupplierId INT FOREIGN KEY REFERENCES [Supplier](Id),
     Email VARCHAR(9) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [SupplierPhone]
@@ -130,21 +132,21 @@ CREATE TABLE [SupplierPhone]
     Id INT IDENTITY PRIMARY KEY,
     SupplierId INT FOREIGN KEY REFERENCES [Supplier](Id),
     PhoneNumber VARCHAR(9) UNIQUE NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [ProductBrand]
 (
     Id INT IDENTITY PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [ProductCategory]
 (
     Id INT IDENTITY PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [Product]
@@ -155,7 +157,15 @@ CREATE TABLE [Product]
     Name VARCHAR(100) NOT NULL,
     Description VARCHAR(250) DEFAULT 'Este producto no tiene descripción.' NOT NULL,
     SalePrice DECIMAL(10, 2) CHECK (SalePrice >= 0) NOT NULL,
-    Stock INT CHECK (Stock >= 0) DEFAULT 0 NOT NULL
+    Stock INT CHECK (Stock >= 0) DEFAULT 0 NOT NULL,
+    Active BIT DEFAULT 1 NOT NULL
+)
+
+CREATE TABLE [ProductImage]
+(
+    ProductId INT PRIMARY KEY FOREIGN KEY REFERENCES Product(Id),
+    ImageName VARCHAR(100),
+    ImagePath VARCHAR(MAX)
 )
 
 CREATE TABLE [Purchase]
@@ -165,7 +175,7 @@ CREATE TABLE [Purchase]
     Quantity INT CHECK (Quantity > 0) NOT NULL,
     PurchasePrice DECIMAL(10, 2) CHECK (PurchasePrice >= 0) NOT NULL,
     TimeStamp DATETIME DEFAULT GETDATE() NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL,
+    Active BIT DEFAULT 1 NOT NULL,
     PRIMARY KEY (ProductId, SupplierId, TimeStamp)
 )
 
@@ -173,14 +183,14 @@ CREATE TABLE [Currency]
 (
     Id INT IDENTITY PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [PaymentType]
 (
     Id INT IDENTITY PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [Sale]
@@ -192,7 +202,7 @@ CREATE TABLE [Sale]
     EmployeeId INT FOREIGN KEY REFERENCES [Employee](Id),
     Payment DECIMAL(10, 2) CHECK (Payment >= 0) NOT NULL,
     TimeStamp DATETIME DEFAULT GETDATE() NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL
+    Active BIT DEFAULT 1 NOT NULL
 )
 
 CREATE TABLE [SaleDetail]
@@ -201,6 +211,108 @@ CREATE TABLE [SaleDetail]
     ProductId INT FOREIGN KEY REFERENCES [Product](Id),
     SalePrice DECIMAL(10, 2) NOT NULL,
     Quantity INT CHECK (Quantity > 0) NOT NULL,
-    Active BINARY DEFAULT 1 NOT NULL,
+    Active BIT DEFAULT 1 NOT NULL,
     PRIMARY KEY (SaleId, ProductId )
 )
+
+-- Stored Procedures
+
+GO
+CREATE PROCEDURE sp_branchoffice_create
+    @Name VARCHAR(100),
+    @Address VARCHAR(250),
+    @MunicipalityId INT,
+    @Active BIT,
+    @Result INT OUTPUT,
+    @Message VARCHAR(250) OUTPUT
+AS
+BEGIN TRY
+	INSERT INTO [BranchOffice]
+    (Name, Address, MunicipalityId, Active)
+VALUES
+    (@Name, @Address, @MunicipalityId, @Active)
+
+	SET @Result = SCOPE_IDENTITY()
+	SET @Message = ''
+END TRY
+
+BEGIN CATCH
+	SET @Result = - 1
+	SET @Message = ERROR_MESSAGE()
+END CATCH
+
+GO
+CREATE PROCEDURE sp_branchoffice_delete
+    @Id INT,
+    @Result BIT OUTPUT,
+    @Message VARCHAR(250) OUTPUT
+AS
+BEGIN TRY
+        DELETE BranchOffice
+        WHERE Id = @Id
+
+        SET @Result = 1
+        SET @Message = ''
+    END TRY
+
+    BEGIN CATCH
+        SET @Result = 0
+        SET @Message = ERROR_MESSAGE()
+    END CATCH
+
+GO
+CREATE PROCEDURE sp_branchoffice_read
+AS
+SELECT
+    Id,
+    Name,
+    Address,
+    MunicipalityId,
+    Active
+FROM BranchOffice
+
+GO
+CREATE PROCEDURE sp_branchoffice_update
+    @Id INT,
+    @Name VARCHAR(100),
+    @Address VARCHAR(250),
+    @MunicipalityId INT,
+    @Active BIT,
+    @Result BIT OUTPUT,
+    @Message VARCHAR(250) OUTPUT
+AS
+BEGIN TRY
+	UPDATE BranchOffice
+	SET Name = @Name,
+		Address = @Address,
+		MunicipalityId = @MunicipalityId,
+		Active = @Active
+	WHERE Id = @Id
+
+	SET @Result = 1
+	SET @Message = ''
+END TRY
+
+BEGIN CATCH
+	SET @Result = 0
+	SET @Message = ERROR_MESSAGE()
+END CATCH
+
+GO
+CREATE PROCEDURE sp_department_read
+AS
+SELECT
+    Id,
+    Name,
+    Active
+FROM Department
+
+GO
+CREATE PROCEDURE sp_municipality_read
+AS
+SELECT
+    Id,
+    DepartmentId,
+    Name,
+    Active
+FROM Municipality
