@@ -10,4 +10,6 @@ We are all students of [The National University of Engineering (Nicaragua)](http
 
 ![UNI Logo](/Documents/Images/logouni.png)
 
-Also you can se the [Mimados' Admin System](https://github.com/Nu11Pointer/MimadosAS).
+Also you can se the [Mimados' Sales and Inventory Management and Administration System.](https://github.com/Nu11Pointer/MimadosAS).
+
+![Screanshot Mimados' Sales and Inventory Management and Administration System.](https://i2.paste.pics/GDM43.png)
