@@ -1,12 +1,8 @@
 USE MimadosDB
 
 GO
-CREATE PROCEDURE sp_branchoffice_read
+ALTER PROCEDURE sp_branchoffice_read
 AS
 SELECT
-    Id,
-    Name,
-    Address,
-    MunicipalityId,
-    Active
-FROM BranchOffice
+    *
+FROM view_branchoffice
