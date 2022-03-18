@@ -1,6 +1,6 @@
 USE MimadosDB
-GO
 
+GO
 CREATE VIEW view_branchoffice
 AS
     SELECT

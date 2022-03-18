@@ -9,8 +9,10 @@ BEGIN
     DROP DATABASE MimadosDB
 END
 
+GO
 CREATE DATABASE MimadosDB
 
+GO
 USE MimadosDB
 
 -- Tables
@@ -123,7 +125,7 @@ CREATE TABLE [SupplierEmail]
 (
     Id INT IDENTITY PRIMARY KEY,
     SupplierId INT FOREIGN KEY REFERENCES [Supplier](Id),
-    Email VARCHAR(9) UNIQUE NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
     Active BIT DEFAULT 1 NOT NULL
 )
 
@@ -155,7 +157,7 @@ CREATE TABLE [Product]
     ProductBrandId INT FOREIGN KEY REFERENCES [ProductBrand](Id),
     ProductCategoryId INT FOREIGN KEY REFERENCES [ProductCategory](Id),
     Name VARCHAR(100) NOT NULL,
-    Description VARCHAR(250) DEFAULT 'Este producto no tiene descripción.' NOT NULL,
+    Description VARCHAR(MAX) DEFAULT 'Este producto no tiene descripción.' NOT NULL,
     SalePrice DECIMAL(10, 2) CHECK (SalePrice >= 0) NOT NULL,
     Stock INT CHECK (Stock >= 0) DEFAULT 0 NOT NULL,
     Active BIT DEFAULT 1 NOT NULL
@@ -215,6 +217,58 @@ CREATE TABLE [SaleDetail]
     PRIMARY KEY (SaleId, ProductId )
 )
 
+-- Views
+
+GO
+CREATE VIEW view_branchoffice
+AS
+    SELECT
+        B.Id,
+        B.Name,
+        B.Address,
+        M.DepartmentId,
+        D.Name AS [Department],
+        D.Active AS [DepartmentActive],
+        B.MunicipalityId,
+        M.Name AS [Municipality],
+        M.Active AS [MunicipalityActive],
+        B.Active
+    FROM BranchOffice AS B
+        INNER JOIN Municipality AS M ON M.Id = B.MunicipalityId
+        INNER JOIN Department AS D ON D.Id = M.DepartmentId
+
+GO
+CREATE VIEW view_branchofficephone
+AS
+    SELECT
+        BP.Id,
+        BP.BranchOfficeId,
+        B.Name [BranchOffice],
+        BP.PhoneNumber,
+        BP.Active
+    FROM BranchOfficePhone AS BP
+        INNER JOIN BranchOffice AS B ON B.Id = BP.BranchOfficeId
+
+GO
+CREATE VIEW view_customer
+AS
+    SELECT
+        C.Id,
+        C.IdentityCard,
+        C.Name,
+        C.SurName,
+        C.Address,
+        C.MunicipalityId,
+        M.Name AS [Municipality],
+        M.Active AS [MunicipalityActive],
+        M.DepartmentId,
+        D.Name AS [Department],
+        D.Active AS [DepartmentActive],
+        C.Active
+    FROM Customer AS C
+        INNER JOIN Municipality AS M ON M.Id = C.MunicipalityId
+        INNER JOIN Department AS D ON D.Id = M.DepartmentId
+
 -- Stored Procedures
 
 GO
@@ -264,12 +318,8 @@ GO
 CREATE PROCEDURE sp_branchoffice_read
 AS
 SELECT
-    Id,
-    Name,
-    Address,
-    MunicipalityId,
-    Active
-FROM BranchOffice
+    *
+FROM view_branchoffice
 
 GO
 CREATE PROCEDURE sp_branchoffice_update
@@ -299,6 +349,12 @@ BEGIN CATCH
 END CATCH
 
 GO
+CREATE PROCEDURE sp_branchofficephone_read
+AS
+SELECT *
+FROM view_branchofficephone
+
+GO
 CREATE PROCEDURE sp_department_read
 AS
 SELECT
@@ -316,3 +372,27 @@ SELECT
     Name,
     Active
 FROM Municipality
+
+-- Triggers
+
+GO
+CREATE TRIGGER tr_product ON [Purchase]
+FOR INSERT
+AS
+SET NOCOUNT ON
+
+UPDATE Product
+SET Stock = P.Stock + I.Quantity
+FROM inserted AS I
+    INNER JOIN Product AS P ON P.Id = I.ProductId
+
+GO
+CREATE TRIGGER tr_sale_detail ON [SaleDetail]
+FOR INSERT
+AS
+SET NOCOUNT ON
+
+UPDATE Product
+SET Stock = P.Stock - I.Quantity
+FROM inserted AS I
+    INNER JOIN Product AS P ON P.Id = I.ProductId

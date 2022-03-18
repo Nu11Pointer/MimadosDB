@@ -1,7 +1,7 @@
 USE MimadosDB
 
 GO
-ALTER PROCEDURE sp_branchoffice_read
+CREATE PROCEDURE sp_branchoffice_read
 AS
 SELECT
     *
