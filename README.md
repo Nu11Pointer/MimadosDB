@@ -11,9 +11,9 @@ This repository contains all the declarations and stuff for *Mimados' DataBase*.
 
 ## Authors
 
-* [Jasson Josue Medina Calderón](https://github.com/Hops28).
-* [José Bismarck Lacayo López](/).
-* [Steven Alexander Méndez Paiz](https://maslinks.com/Nu11Pointer).
+- [Jasson Josue Medina Calderón](https://github.com/Hops28).
+- [José Bismarck Lacayo López](/).
+- [Steven Alexander Méndez Paiz](https://maslinks.com/Nu11Pointer).
 
 ## University
 
