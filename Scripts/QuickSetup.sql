@@ -200,9 +200,9 @@ CREATE TABLE [SaleDetail] (
 		ProductId
 		)
 	)
-	-- Views
 GO
 
+-- Views
 CREATE VIEW [view_branchoffice]
 AS
 SELECT B.Id,
@@ -251,7 +251,7 @@ INNER JOIN [Department] AS D ON D.Id = M.DepartmentId
 GO
 
 -- Stored Procedures
-CREATE PROCEDURE [sp_branchoffice_crud] @Operation VARCHAR(1),
+CREATE PROCEDURE [sp_branchoffice] @Operation VARCHAR(1),
 	@Id INT = NULL,
 	@Name VARCHAR(100) = NULL,
 	@Address VARCHAR(250) = NULL,
@@ -339,30 +339,180 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [sp_branchofficephone_read]
-AS
-SELECT *
-FROM [view_branchofficephone]
+
 GO
 
-CREATE PROCEDURE [sp_department_read]
+CREATE PROCEDURE [sp_branchofficephone] @Operation VARCHAR(1),
+	@Id INT = NULL,
+	@BranchOfficeId INT = NULL,
+	@PhoneNumber VARCHAR(9) = NULL,
+	@Active BIT = 1,
+	@Result BIT = 0 OUTPUT,
+	@Message VARCHAR(250) = '' OUTPUT
 AS
-SELECT Id,
-	Name,
-	Active
-FROM Department
+IF @Operation LIKE 'C'
+BEGIN
+	BEGIN TRY
+		INSERT INTO [BranchOfficePhone] (
+			BranchOfficeId,
+			PhoneNumber,
+			Active
+			)
+		VALUES (
+			@BranchOfficeId,
+			@PhoneNumber,
+			@Active
+			)
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'R'
+BEGIN
+	BEGIN TRY
+		SELECT *
+		FROM [view_branchofficephone]
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'U'
+BEGIN
+	BEGIN TRY
+		UPDATE [BranchOfficePhone]
+		SET PhoneNumber = @PhoneNumber,
+			Active = @Active
+		WHERE Id = @Id
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'D'
+BEGIN
+	BEGIN TRY
+		DELETE [BranchOfficePhone]
+		WHERE Id = @Id
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
 GO
 
-CREATE PROCEDURE [sp_municipality_read]
+CREATE PROCEDURE [sp_municipality] @Operation VARCHAR(1),
+	@Id INT = NULL,
+	@DepartmentId INT = NULL,
+	@Name VARCHAR(100) = NULL,
+	@Active BIT = NULL,
+	@Result BIT = 0 OUTPUT,
+	@Message VARCHAR(250) = '' OUTPUT
 AS
-SELECT Id,
-	DepartmentId,
-	Name,
-	Active
-FROM Municipality
-	-- Triggers
+IF @Operation LIKE 'C'
+BEGIN
+	BEGIN TRY
+		INSERT INTO [Municipality] (
+			DepartmentId,
+			Name,
+			Active
+			)
+		VALUES (
+			@DepartmentId,
+			@Name,
+			@Active
+			)
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'R'
+BEGIN
+	BEGIN TRY
+		SELECT Id,
+			DepartmentId,
+			Name,
+			Active
+		FROM [Department]
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'U'
+BEGIN
+	BEGIN TRY
+		UPDATE [Municipality]
+		SET DepartmentId = @DepartmentId,
+			Name = @Name,
+			Active = @Active
+		WHERE Id = @Id
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'D'
+BEGIN
+	BEGIN TRY
+		DELETE [Municipality]
+		WHERE Id = @Id
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
 GO
 
+-- Triggers
 CREATE TRIGGER [tr_product] ON [Purchase]
 FOR INSERT
 AS
