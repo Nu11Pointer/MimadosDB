@@ -8,10 +8,10 @@ SELECT S.Id,
 	S.Address,
 	S.MunicipalityId,
 	M.Name AS [Municipality],
+	M.Active AS [MunicipalityActive],
 	M.DepartmentId,
 	D.Name AS [Department],
 	D.Active AS [DepartmentActive],
-	M.Active AS [MunicipalityActive],
 	S.Active
 FROM [Supplier] AS S
 INNER JOIN [Municipality] AS M ON M.Id = S.MunicipalityId

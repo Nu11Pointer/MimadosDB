@@ -1,7 +1,7 @@
 USE MimadosDB
 GO
 
-CREATE PROCEDURE sp_supplier @Operation VARCHAR(1),
+CREATE PROCEDURE [sp_supplier] @Operation VARCHAR(1),
 	@Id INT = NULL,
 	@Name VARCHAR(100) = NULL,
 	@Address VARCHAR(250) = NULL,
@@ -26,7 +26,7 @@ BEGIN
 			@Active
 			)
 
-		SET @Result = SCOPE_IDENTITY()
+		SET @Result = 1
 		SET @Message = ''
 	END TRY
 

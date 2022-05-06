@@ -53,7 +53,8 @@ IF @Operation LIKE 'U'
 BEGIN
 	BEGIN TRY
 		UPDATE [BranchOfficePhone]
-		SET PhoneNumber = @PhoneNumber,
+		SET BranchOfficeId = @BranchOfficeId,
+			PhoneNumber = @PhoneNumber,
 			Active = @Active
 		WHERE Id = @Id
 

@@ -1,7 +1,7 @@
 USE MimadosDB
 GO
 
-CREATE PROCEDURE sp_paymenttype @Operation VARCHAR(1),
+CREATE OR ALTER PROCEDURE [sp_paymenttype] @Operation VARCHAR(1),
 	@Id INT = NULL,
 	@Name VARCHAR(100) = NULL,
 	@Active BIT = 1,
@@ -20,7 +20,7 @@ BEGIN
 			@Active
 			)
 
-		SET @Result = SCOPE_IDENTITY()
+		SET @Result = 1
 		SET @Message = ''
 	END TRY
 

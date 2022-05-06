@@ -38,7 +38,7 @@ BEGIN
 			@Active
 			)
 
-		SET @Result = SCOPE_IDENTITY()
+		SET @Result = 1
 		SET @Message = ''
 	END TRY
 
