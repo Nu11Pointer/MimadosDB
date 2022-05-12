@@ -12,7 +12,8 @@ ALTER PROCEDURE [sp_sale] @Operation VARCHAR(1),
 	@Active BIT = NULL,
 	@SaleDetail XML = NULL,
 	@Result BIT = 0 OUTPUT,
-	@Message VARCHAR(250) = '' OUTPUT
+	@Message VARCHAR(250) = '' OUTPUT,
+	@Scope INT = 0 OUTPUT
 AS
 IF @Operation LIKE 'C'
 BEGIN
@@ -45,13 +46,14 @@ BEGIN
 			Quantity
 			)
 		SELECT SaleId = @scope_identity,
-			ProductId = Node.Data.value('(ProductId)[1]', 'INT'),
+			ProductId = Node.Data.value('(Product/Id)[1]', 'INT'),
 			SalePrice = Node.Data.value('(SalePrice)[1]', 'DECIMAL(10, 2)'),
 			Quantity = Node.Data.value('(Quantity)[1]', 'INT')
 		FROM @SaleDetail.nodes('/ArrayOfSaleDetail/SaleDetail') AS Node(Data)
 
 		COMMIT
-
+		
+		SET @Scope = @scope_identity
 		SET @Result = 1
 		SET @Message = ''
 	END TRY
@@ -59,6 +61,25 @@ BEGIN
 	BEGIN CATCH
 		ROLLBACK
 
+		SET @Scope = -1
+		SET @Result = 0
+		SET @Message = ERROR_MESSAGE()
+	END CATCH
+END
+
+IF @Operation LIKE 'R'
+BEGIN
+	BEGIN TRY
+		SELECT *
+		FROM [view_sale]
+
+		SET @Result = 1
+		SET @Message = ''
+	END TRY
+
+	BEGIN CATCH
+
+		SET @Scope = -1
 		SET @Result = 0
 		SET @Message = ERROR_MESSAGE()
 	END CATCH
