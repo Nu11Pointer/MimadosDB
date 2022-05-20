@@ -13,7 +13,7 @@ SELECT S.Id,
     E.Name AS [EmployeeName],
     E.SurName AS [EmployeeSurName],
 	S.Payment,
-    dbo.get_total(S.Id) AS Total,
+    dbo.get_total(S.Id, 1) AS Total,
 	S.[TimeStamp],
 	S.Active
 FROM [Sale] AS S

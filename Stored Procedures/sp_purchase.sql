@@ -1,39 +1,67 @@
 USE MimadosDB
 GO
 
-CREATE PROCEDURE [sp_purchase] @Operation VARCHAR(1),
-	@ProductId INT = NULL,
+ALTER PROCEDURE [sp_purchase] @Operation VARCHAR(1),
+	@Id INT = NULL,
+	@CurrencyId INT = NULL,
+	@PaymentTypeId INT = NULL,
 	@SupplierId INT = NULL,
-	@Quantity INT = NULL,
-	@PurchasePrice DECIMAL(10, 2) = NULL,
-	@TimeStamp DATETIME  = NULL,
+	@EmployeeId INT = NULL,
+	@Payment DECIMAL(10, 2) = NULL,
+	@TimeStamp DATETIME = NULL,
 	@Active BIT = NULL,
+	@PurchaseDetail XML = NULL,
 	@Result BIT = 0 OUTPUT,
-	@Message VARCHAR(250) = '' OUTPUT
+	@Message VARCHAR(250) = '' OUTPUT,
+	@Scope INT = 0 OUTPUT
 AS
 IF @Operation LIKE 'C'
 BEGIN
 	BEGIN TRY
+		BEGIN TRANSACTION
+
 		INSERT INTO [Purchase] (
-			ProductId,
-            SupplierId,
-            Quantity,
-            PurchasePrice,
-            Active
+			CurrencyId,
+			PaymentTypeId,
+			SupplierId,
+			EmployeeId,
+			Payment
 			)
 		VALUES (
-			@ProductId,
-            @SupplierId,
-            @Quantity,
-            @PurchasePrice,
-            @Active
+			@CurrencyId,
+			@PaymentTypeId,
+			@SupplierId,
+			@EmployeeId,
+			@Payment
 			)
 
+		DECLARE @scope_identity INT
+
+		SET @scope_identity = SCOPE_IDENTITY()
+
+		INSERT INTO [PurchaseDetail] (
+			PurchaseId,
+			ProductId,
+			PurchasePrice,
+			Quantity
+			)
+		SELECT PurchaseId = @scope_identity,
+			ProductId = Node.Data.value('(Product/Id)[1]', 'INT'),
+			PurchasePrice = Node.Data.value('(PurchasePrice)[1]', 'DECIMAL(10, 2)'),
+			Quantity = Node.Data.value('(Quantity)[1]', 'INT')
+		FROM @PurchaseDetail.nodes('/ArrayOfPurchaseDetails/PurchaseDetails') AS Node(Data)
+
+		COMMIT
+
+		SET @Scope = @scope_identity
 		SET @Result = 1
 		SET @Message = ''
 	END TRY
 
 	BEGIN CATCH
+		ROLLBACK
+
+		SET @Scope = - 1
 		SET @Result = 0
 		SET @Message = ERROR_MESSAGE()
 	END CATCH
@@ -42,50 +70,15 @@ END
 IF @Operation LIKE 'R'
 BEGIN
 	BEGIN TRY
-		SELECT * FROM [view_purchase] ORDER BY [TimeStamp] DESC
+		SELECT *
+		FROM [view_purchase]
 
 		SET @Result = 1
 		SET @Message = ''
 	END TRY
 
 	BEGIN CATCH
-		SET @Result = 0
-		SET @Message = ERROR_MESSAGE()
-	END CATCH
-END
-
-IF @Operation LIKE 'U'
-BEGIN
-	BEGIN TRY
-		UPDATE [Purchase]
-		SET ProductId = @ProductId,
-            SupplierId = @SupplierId,
-            Quantity = @Quantity,
-            PurchasePrice = @PurchasePrice,
-            Active = @Active
-		WHERE [TimeStamp] LIKE @TimeStamp
-
-		SET @Result = 1
-		SET @Message = ''
-	END TRY
-
-	BEGIN CATCH
-		SET @Result = 0
-		SET @Message = ERROR_MESSAGE()
-	END CATCH
-END
-
-IF @Operation LIKE 'D'
-BEGIN
-	BEGIN TRY
-		DELETE [Purchase]
-		WHERE [TimeStamp] LIKE @TimeStamp
-
-		SET @Result = 1
-		SET @Message = ''
-	END TRY
-
-	BEGIN CATCH
+		SET @Scope = - 1
 		SET @Result = 0
 		SET @Message = ERROR_MESSAGE()
 	END CATCH

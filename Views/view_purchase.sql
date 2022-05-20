@@ -3,16 +3,18 @@ GO
 
 CREATE VIEW [view_purchase]
 AS
-SELECT PC.[ProductId],
-	P.Name AS [Product],
-	P.Active AS [ProductActive],
-	PC.SupplierId,
+SELECT P.Id,
+	P.CurrencyId,
+	P.PaymentTypeId,
+	P.SupplierId,
 	S.Name AS [Supplier],
-	S.Active AS [SupplierActive],
-	PC.Quantity,
-	PC.PurchasePrice,
-	PC.[TimeStamp],
-	PC.Active
-FROM [Purchase] AS PC
-INNER JOIN Product AS P ON P.Id = PC.ProductId
-INNER JOIN Supplier AS S ON S.Id = PC.SupplierId
+	P.EmployeeId,
+	E.Name AS [EmployeeName],
+	E.SurName AS [EmployeeSurName],
+	P.Payment,
+	dbo.get_total(P.Id, 0) AS Total,
+	P.[TimeStamp],
+	P.Active
+FROM [Purchase] AS P
+INNER JOIN [Supplier] AS S ON S.Id = P.SupplierId
+INNER JOIN [Employee] AS E ON E.Id = P.EmployeeId
