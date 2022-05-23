@@ -1,0 +1,9 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [ProductPackaging]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Active BIT DEFAULT 1 NOT NULL
+)

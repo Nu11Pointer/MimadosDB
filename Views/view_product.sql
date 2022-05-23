@@ -1,7 +1,7 @@
 USE MimadosDB
 GO
 
-CREATE VIEW view_product
+ALTER VIEW view_product
 AS
 SELECT P.Id,
 	P.ProductBrandId,
@@ -12,9 +12,19 @@ SELECT P.Id,
 	PC.Active AS [ProductCategoryActive],
 	P.Name,
 	P.Description,
+	P.ProductPackagingId,
+	PP.Name AS [ProductPackaging],
+	PP.Active AS [ProductPackagingActive],
+	P.NetContent,
+	P.ProductMeasurementUnitId,
+	PMU.Name AS [ProductMeasurementUnit],
+	PMU.Symbol AS [ProductMeasurementUnitSymbol],
+	PMU.Active AS [ProductMeasurementUnitActive],
 	P.SalePrice,
 	P.Stock,
 	P.Active
 FROM Product AS P
 INNER JOIN ProductBrand AS PB ON PB.ID = P.ProductBrandId
 INNER JOIN ProductCategory AS PC ON PC.ID = P.ProductCategoryId
+INNER JOIN ProductPackaging AS PP ON PP.Id = P.ProductPackagingId
+INNER JOIN ProductMeasurementUnit AS PMU ON PMU.Id = P.ProductMeasurementUnitId

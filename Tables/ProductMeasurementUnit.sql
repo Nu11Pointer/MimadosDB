@@ -1,0 +1,10 @@
+USE MimadosDB
+GO
+
+CREATE TABLE [ProductMeasurementUnit]
+(
+    Id INT IDENTITY PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Symbol VARCHAR(10) NOT NULL,
+    Active BIT DEFAULT 1 NOT NULL
+)

@@ -1,12 +1,15 @@
 USE MimadosDB
 GO
 
-CREATE PROCEDURE [sp_product] @Operation VARCHAR(1),
+ALTER PROCEDURE [sp_product] @Operation VARCHAR(1),
 	@Id INT = NULL,
 	@ProductBrandId INT = NULL,
 	@ProductCategoryId INT = NULL,
+	@ProductPackagingId INT = NULL,
+	@ProductMeasurementUnitId INT = NULL,
 	@Name VARCHAR(100) = NULL,
 	@Description VARCHAR(MAX) = NULL,
+	@NetContent DECIMAL(10, 2) = NULL,
 	@SalePrice DECIMAL(10, 2) = NULL,
 	@Stock INT = NULL,
 	@Active BIT = NULL,
@@ -19,8 +22,11 @@ BEGIN
 		INSERT INTO [Product] (
             ProductBrandId,
             ProductCategoryId,
+			ProductPackagingId,
+			ProductMeasurementUnitId,
 			Name,
             Description,
+			NetContent,
             SalePrice,
             Stock,
 			Active
@@ -28,8 +34,11 @@ BEGIN
 		VALUES (
 			@ProductBrandId,
             @ProductCategoryId,
+			@ProductPackagingId,
+			@ProductMeasurementUnitId,
 			@Name,
             @Description,
+			@NetContent,
             @SalePrice,
             @Stock,
 			@Active
@@ -67,9 +76,12 @@ BEGIN
 		UPDATE [Product]
 		SET ProductBrandId = @ProductBrandId,
             ProductCategoryId = @ProductCategoryId,
+			ProductPackagingId = @ProductPackagingId,
+			ProductMeasurementUnitId = @ProductMeasurementUnitId,
             Name = @Name,
             Description = @Description,
-            SalePrice = @SalePrice,
+            NetContent = @NetContent,
+			SalePrice = @SalePrice,
             Stock = @Stock,
 			Active = @Active
 		WHERE Id = @Id
