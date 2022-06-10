@@ -4,7 +4,7 @@ GO
 CREATE TABLE [Customer]
 (
     Id INT IDENTITY PRIMARY KEY,
-    IdentityCard VARCHAR(16) UNIQUE,
+    IdentityCard VARCHAR(16),
     Name VARCHAR(100) NOT NULL,
     SurName VARCHAR(100) NOT NULL,
     Address VARCHAR(250) NOT NULL,

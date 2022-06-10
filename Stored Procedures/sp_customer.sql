@@ -15,25 +15,38 @@ AS
 IF @Operation LIKE 'C'
 BEGIN
 	BEGIN TRY
-		INSERT INTO [Customer] (
-			IdentityCard,
-			Name,
-			SurName,
-			Address,
-			MunicipalityId,
-			Active
-			)
-		VALUES (
-			@IdentityCard,
-			@Name,
-			@SurName,
-			@Address,
-			@MunicipalityId,
-			@Active
-			)
+		IF EXISTS (
+				SELECT *
+				FROM [Customer]
+				WHERE IdentityCard = @IdentityCard
+					AND IdentityCard != ''
+				)
+		BEGIN
+			SET @Result = 0
+			SET @Message = '''UQ__Customer__DA5B2F6D810D38F3'''
+		END
+		ELSE
+		BEGIN
+			INSERT INTO [Customer] (
+				IdentityCard,
+				Name,
+				SurName,
+				Address,
+				MunicipalityId,
+				Active
+				)
+			VALUES (
+				@IdentityCard,
+				@Name,
+				@SurName,
+				@Address,
+				@MunicipalityId,
+				@Active
+				)
 
-		SET @Result = 1
-		SET @Message = ''
+			SET @Result = 1
+			SET @Message = ''
+		END
 	END TRY
 
 	BEGIN CATCH
